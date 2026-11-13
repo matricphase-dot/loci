@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iOCIgZmlsbD0iIzA3MGQxMCIvPjxjaXJjbGUgY3g9IjE2IiBjeT0iMTYiIHI9IjciIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzdmZTNjMCIgc3Ryb2tlLXdpZHRoPSIyLjUiLz48Y2lyY2xlIGN4PSIxNiIgY3k9IjE2IiByPSIyLjIiIGZpbGw9IiM3ZmUzYzAiLz48L3N2Zz4="><rect width="32" height="32" rx="8" fill="%23070d10"/><circle cx="16" cy="16" r="7" fill="none" stroke="%237fe3c0" stroke-width="2.5"/><circle cx="16" cy="16" r="2.2" fill="%237fe3c0"/></svg>">
+  <title>LOCI — a memory palace for your real room</title>
+<meta name="description" content="LOCI turns your actual room into a memory palace. Author notes on the flat screen, then anchor them to your real walls and tables and recall them with your hands." />
+<meta name="theme-color" content="#070d10" />
+<style>
+  :root {
+    --ink: #eaf6f2;
+    --muted: #8ba39d;
+    --accent: #7fe3c0;
+    --accent-dim: rgba(127, 227, 192, 0.14);
+    --bg: #070d10;
+    --panel: rgba(255, 255, 255, 0.035);
+    --line: rgba(127, 227, 192, 0.16);
+    --radius: 18px;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+  #canvas-root { position: fixed; inset: 0; z-index: 0; }
+  #canvas-root canvas { display: block; }
+
+  .shell {
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: minmax(360px, 460px) 1fr;
+    pointer-events: none;
+  }
+  .shell > * { pointer-events: auto; }
+
+  /* ---------- left rail: brand, authoring, list ---------- */
+  .rail {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 26px 22px 22px;
+    height: 100%;
+    overflow-y: auto;
+    background: linear-gradient(180deg, rgba(7,13,16,0.97) 0%, rgba(7,13,16,0.90) 70%, rgba(7,13,16,0.72) 100%);
+    border-right: 1px solid var(--line);
+    backdrop-filter: blur(14px);
+    scrollbar-width: thin;
+  }
+  .rail::-webkit-scrollbar { width: 6px; }
+  .rail::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .mark {
+    width: 38px; height: 38px; flex: 0 0 38px;
+    border-radius: 11px;
+    border: 1px solid var(--line);
+    background: radial-gradient(120% 120% at 30% 20%, rgba(127,227,192,0.30), rgba(127,227,192,0.03));
+    display: grid; place-items: center;
+  }
+  .mark svg { width: 22px; height: 22px; }
+  .wordmark { font-size: 21px; font-weight: 700; letter-spacing: 0.16em; }
+  .tagline { font-size: 11.5px; color: var(--muted); margin-top: 3px; letter-spacing: 0.02em; }
+
+  h2 {
+    font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--muted); margin: 0 0 10px; font-weight: 600;
+  }
+
+  .stats {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+  }
+  .stat {
+    background: var(--panel); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 13px; padding: 11px 13px;
+  }
+  .stat b { display: block; font-size: 22px; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .stat span { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .stat.wide { grid-column: 1 / -1; }
+  .stat.wide b { font-size: 13px; font-weight: 500; color: var(--accent); letter-spacing: 0; }
+
+  .ritual {
+    display: flex; align-items: center; gap: 11px;
+    margin-top: 8px; padding: 11px 13px;
+    border-radius: 13px;
+    background: linear-gradient(100deg, rgba(127,227,192,0.13), rgba(127,227,192,0.03));
+    border: 1px solid rgba(127,227,192,0.22);
+  }
+  .ritual-flame { font-size: 19px; color: var(--accent); line-height: 1; }
+  .ritual-text b { display: block; font-size: 13px; font-weight: 650; color: var(--ink); }
+  .ritual-text span { font-size: 10.5px; color: var(--muted); line-height: 1.4; display: block; margin-top: 2px; }
+  .ritual.done { background: rgba(127,227,192,0.06); border-color: rgba(127,227,192,0.14); }
+
+  form { display: grid; gap: 9px; }
+  label { font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  textarea, input, select {
+    width: 100%; font-family: var(--sans); font-size: 13.5px; color: var(--ink);
+    background: rgba(255,255,255,0.045);
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 11px; padding: 10px 12px; resize: none;
+    transition: border-color .16s, background .16s;
+  }
+  textarea:focus, input:focus, select:focus {
+    outline: none; border-color: var(--accent);
+    background: rgba(127,227,192,0.07);
+  }
+  textarea { min-height: 54px; line-height: 1.45; }
+  select { appearance: none; cursor: pointer; }
+  .row { display: grid; grid-template-columns: 1fr auto; gap: 9px; align-items: end; }
+
+  button {
+    font-family: var(--sans); font-size: 13px; font-weight: 600;
+    border-radius: 11px; padding: 11px 16px; cursor: pointer;
+    border: 1px solid var(--line); background: var(--accent-dim); color: var(--accent);
+    transition: transform .12s, background .16s, border-color .16s;
+  }
+  button:hover { background: rgba(127,227,192,0.22); border-color: rgba(127,227,192,0.4); }
+  button:active { transform: translateY(1px); }
+  button.primary {
+    background: var(--accent); color: #04120e; border-color: transparent;
+    font-size: 14px; padding: 14px 18px; width: 100%;
+  }
+  button.primary:hover { background: #9bf0d2; }
+  button.ghost { background: transparent; color: var(--muted); font-weight: 500; font-size: 11.5px; padding: 7px 10px; }
+  button.ghost:hover { color: var(--ink); border-color: rgba(255,255,255,0.18); background: rgba(255,255,255,0.05); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+  .chip {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.02em;
+    padding: 5px 11px; border-radius: 999px; cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.04); color: var(--muted);
+    transition: all .15s;
+  }
+  .chip:hover { color: var(--ink); border-color: rgba(255,255,255,0.2); }
+  .chip.active {
+    background: var(--accent-dim); border-color: rgba(127,227,192,0.5);
+    color: var(--accent);
+  }
+
+  .list { display: grid; gap: 6px; }
+  .card-row {
+    display: grid; grid-template-columns: 8px 1fr 52px;
+    gap: 10px; align-items: center;
+    padding: 9px 11px; border-radius: 11px;
+    background: var(--panel); border: 1px solid rgba(255,255,255,0.045);
+  }
+  .card-row .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .card-front {
+    font-size: 12.5px; font-weight: 500; line-height: 1.35;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .card-meta { font-size: 10px; color: var(--muted); margin-top: 2px; font-family: var(--mono); }
+  .fade-meter { height: 4px; border-radius: 2px; background: rgba(255,255,255,0.08); overflow: hidden; }
+  .fade-meter span { display: block; height: 100%; background: linear-gradient(90deg, var(--accent), #ff9a6b); }
+
+  /* ---------- right: stage / status ---------- */
+  .stage {
+    position: relative;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 26px 28px 26px;
+    pointer-events: none;
+  }
+  .stage > * { pointer-events: auto; }
+
+  .xrbar {
+    position: absolute; top: 26px; left: 28px; right: 28px;
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  }
+  .pill {
+    display: inline-flex; align-items: center; gap: 7px;
+    max-width: 46vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    font-size: 10.5px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase;
+    padding: 6px 11px; border-radius: 999px;
+    border: 1px solid var(--line); color: var(--muted);
+    background: rgba(7,13,16,0.72); backdrop-filter: blur(10px);
+  }
+  .pill .led { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+  .pill.live .led { animation: blink 1.6s ease-in-out infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.35} }
+
+  .hero {
+    max-width: 520px; margin-bottom: 18px;
+    transition: opacity .3s ease, transform .3s ease;
+    background: rgba(7,13,16,0.82); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 20px 22px;
+    backdrop-filter: blur(14px);
+  }
+  .hero h1 { font-size: 25px; line-height: 1.2; margin: 0 0 9px; letter-spacing: -0.022em; font-weight: 700; }
+  .hero h1 em { color: var(--accent); font-style: normal; }
+  .hero p { margin: 0 0 13px; font-size: 13px; line-height: 1.6; color: rgba(234,246,242,0.78); }
+  .hero ol { margin: 0 0 15px; padding-left: 18px; font-size: 12.5px; line-height: 1.75; color: rgba(234,246,242,0.74); }
+  .hero ol li::marker { color: var(--accent); font-weight: 700; }
+  .hero ol b { color: var(--ink); font-weight: 600; }
+  .hero-row { display: flex; align-items: center; gap: 12px; margin-top: 9px; flex-wrap: wrap; }
+  .hero-row .ghost { padding: 9px 14px; }
+  .hero-note { font-size: 10.5px; color: var(--muted); }
+
+  /* ---------- tour / screening mode ---------- */
+  .tour { position: fixed; inset: 0; z-index: 5; pointer-events: none; }
+  .tour[hidden] { display: none; }
+  .tour-bar {
+    position: absolute; left: 0; right: 0; height: 0;
+    background: #000; transition: height .6s cubic-bezier(.4,0,.2,1);
+  }
+  .tour-bar.top { top: 0; }
+  .tour-bar.bottom { bottom: 0; }
+  .tour.active .tour-bar { height: 9vh; }
+
+  .tour-caption {
+    position: absolute; left: 0; right: 0; bottom: 14vh;
+    text-align: center; padding: 0 8vw;
+    opacity: 0; transform: translateY(14px);
+    transition: opacity .7s ease, transform .7s ease;
+  }
+  .tour-caption.show { opacity: 1; transform: translateY(0); }
+  .tour-caption h3 {
+    font-size: clamp(19px, 2.6vw, 34px); font-weight: 650; margin: 0 0 9px;
+    letter-spacing: -0.02em; color: #fff;
+    text-shadow: 0 2px 24px rgba(0,0,0,.9);
+  }
+  .tour-caption p {
+    font-size: clamp(12px, 1.25vw, 16px); margin: 0; color: rgba(234,246,242,.72);
+    text-shadow: 0 2px 18px rgba(0,0,0,.9); max-width: 620px; margin-inline: auto;
+    line-height: 1.55;
+  }
+
+  .tour-hud {
+    position: absolute; top: 3.2vh; right: 3vw;
+    display: flex; align-items: center; gap: 10px; pointer-events: auto;
+  }
+  .tour-btn {
+    font-family: var(--sans); font-size: 12px; font-weight: 600;
+    padding: 9px 16px; border-radius: 999px; cursor: pointer;
+    background: rgba(127,227,192,.14); color: var(--accent);
+    border: 1px solid rgba(127,227,192,.4);
+    backdrop-filter: blur(12px); transition: all .16s;
+  }
+  .tour-btn:hover { background: rgba(127,227,192,.26); }
+  .tour-btn.ghost { background: rgba(255,255,255,.06); color: var(--muted); border-color: rgba(255,255,255,.14); }
+  .tour-btn.ghost:hover { color: var(--ink); }
+  .tour-time { font-size: 11px; color: var(--muted); font-family: var(--mono); }
+
+  .tour-progress {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 2px;
+    background: rgba(255,255,255,.08);
+  }
+  .tour-progress span {
+    display: block; height: 100%; width: 0;
+    background: var(--accent); transition: width .1s linear;
+  }
+  body.touring .shell { opacity: 0; pointer-events: none; transition: opacity .5s; }
+
+  .toast {
+    position: fixed; left: 50%; bottom: 26px; transform: translate(-50%, 20px);
+    z-index: 20; max-width: min(560px, calc(100vw - 48px));
+    background: rgba(12,20,24,0.96); border: 1px solid var(--line);
+    border-radius: 13px; padding: 13px 18px;
+    font-size: 12.5px; line-height: 1.5; color: var(--ink);
+    box-shadow: 0 18px 50px rgba(0,0,0,0.6);
+    opacity: 0; pointer-events: none;
+    transition: opacity .22s, transform .22s;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  /* The intro only belongs in the lobby. Once a session or review starts it
+     retracts so it never fights the in-world panel for attention. */
+  /* Require the attribute to EXIST before hiding. Without the [data-mode]
+     qualifier this rule also matches on the very first paint, before boot()
+     runs — the hero then starts invisible and unclickable, and fades in late.
+     That is a real first-load bug, not just a test artefact. */
+  body[data-mode]:not([data-mode="lobby"]) .hero {
+    opacity: 0; transform: translateY(14px); pointer-events: none;
+  }
+  .in-xr .shell { opacity: 0; pointer-events: none; transition: opacity .3s; }
+  .in-xr #canvas-root { background: #000; }
+
+  @media (max-width: 900px) {
+    .shell { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+    .rail { max-height: 56vh; border-right: none; border-bottom: 1px solid var(--line); }
+    .stage { padding: 16px; }
+    .hero { max-width: none; }
+    .hero h1 { font-size: 20px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+  <div id="canvas-root"></div>
+
+  <div class="shell">
+    <!-- ============ LEFT: authoring + schedule ============ -->
+    <aside class="rail">
+      <div class="brand">
+        <div class="mark" aria-hidden="true">
+          <!-- A note pinned to a corner: the product in one glyph. -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="#7fe3c0" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4h10l6 6v10H4z"/>
+            <path d="M14 4v6h6"/>
+            <circle cx="9" cy="15" r="1.6" fill="#7fe3c0" stroke="none"/>
+          </svg>
+        </div>
+        <div>
+          <div class="wordmark">LOCI</div>
+          <div class="tagline">A memory palace for your real room</div>
+        </div>
+      </div>
+
+      <section>
+        <h2>Your palace</h2>
+        <div class="chips" id="context-chips"></div>
+        <div class="stats">
+          <div class="stat"><b id="stat-total">0</b><span>notes</span></div>
+          <div class="stat"><b id="stat-due">0</b><span>fading now</span></div>
+          <div class="stat"><b id="stat-strength">0%</b><span>strength</span></div>
+          <div class="stat"><b id="input-mode">—</b><span>input</span></div>
+          <div class="stat wide"><b id="stat-next">No notes yet</b></div>
+        </div>
+        <div class="ritual" id="ritual-strip">
+          <div class="ritual-flame" id="ritual-flame">◇</div>
+          <div class="ritual-text">
+            <b id="stat-streak">Start your streak</b>
+            <span id="stat-ritual">Practice once a day to keep your palace from fading.</span>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Add a note</h2>
+        <form id="add-form" autocomplete="off">
+          <div>
+            <label for="front-input">Prompt</label>
+            <textarea id="front-input" placeholder="What do you want to remember?" required maxlength="140"></textarea>
+          </div>
+          <div>
+            <label for="back-input">Answer</label>
+            <textarea id="back-input" placeholder="What's the answer?" required maxlength="220"></textarea>
+          </div>
+          <div class="row">
+            <div>
+              <label for="context-input">Palace</label>
+              <input id="context-input" placeholder="work" maxlength="18" value="work" />
+            </div>
+            <div>
+              <label for="kind-input">Kind</label>
+              <select id="kind-input">
+                <option value="general">General</option>
+                <option value="language">Language</option>
+                <option value="science">Science</option>
+                <option value="history">History</option>
+                <option value="code">Code</option>
+                <option value="people">People</option>
+              </select>
+            </div>
+            <button type="submit">Add</button>
+          </div>
+        </form>
+      </section>
+
+      <section>
+        <h2>Waiting in your room</h2>
+        <div class="list" id="card-list"></div>
+        <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
+          <button class="ghost" id="export-json">Export JSON</button>
+          <button class="ghost" id="reset-demo">Reset demo</button>
+        </div>
+      </section>
+    </aside>
+
+    <!-- ============ RIGHT: stage ============ -->
+    <main class="stage">
+      <div class="xrbar">
+        <span class="pill" id="xr-badge">DESKTOP PREVIEW</span>
+        <span class="pill" id="support-note">Checking WebXR…</span>
+      </div>
+
+      <div class="hero">
+        <h1>Your room is the <em>mnemonic</em>.</h1>
+        <p>
+          The method of loci works because spatial memory outlasts everything else.
+          LOCI puts your notes on the walls you already know — and a note's appearance
+          <em style="font-style:normal;color:var(--accent)">is</em> its memory strength.
+          As you begin to forget, it fades. Your room becomes a live readout of what
+          your brain is about to lose.
+        </p>
+        <ol>
+          <li><b>Author</b> a note here. You never type in a headset.</li>
+          <li><b>Place</b> it: look at a wall, a table, a shelf — pinch where it lives.</li>
+          <li><b>Recall</b> by gazing at a fading note and pinching to bring it back.</li>
+        </ol>
+        <button class="primary" id="start-tour">▶ Play the tour · 35s</button>
+        <div class="hero-row">
+          <button class="ghost" id="enter-xr">Enter your palace in VR</button>
+          <span class="hero-note">Needs a Quest or the Immersive Web Emulator</span>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Tour player: the browser becomes a screening room -->
+  <div class="tour" id="tour" aria-hidden="true">
+    <div class="tour-bar top"></div>
+    <div class="tour-bar bottom"></div>
+    <div class="tour-caption">
+      <h3 id="tour-caption"></h3>
+      <p id="tour-sub"></p>
+    </div>
+    <div class="tour-hud">
+      <button class="tour-btn ghost" id="tour-skip" hidden>Skip ▸</button>
+      <span class="tour-time" id="tour-time"></span>
+    </div>
+    <div class="tour-progress"><span id="tour-progress"></span></div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

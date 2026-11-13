@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.DS_Store
+*.log
+.vite/
+.env
+.env.local
+
+# keep the demo video + screenshots out of the repo if it ever gets large:
+# (they are shipped in loci-submission.zip instead)
+# shots/video/
