@@ -8,9 +8,9 @@ import { boot } from './app.js';
 try {
   boot();
 } catch (err) {
-  console.error('[LOCI] boot failed', err);
+  console.error('[LOCII] boot failed', err);
   const el = document.createElement('pre');
   el.style.cssText = 'position:fixed;inset:24px;z-index:99;color:#ff9a6b;background:#0a0f12;border:1px solid #ff9a6b44;padding:20px;border-radius:12px;overflow:auto;font:12px ui-monospace,monospace;white-space:pre-wrap';
-  el.textContent = `LOCI failed to start.\n\n${err?.stack ?? err}`;
+  el.textContent = `LOCII failed to start.\n\n${err?.stack ?? err}`;
   document.body.appendChild(el);
 }

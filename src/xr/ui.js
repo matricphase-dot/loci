@@ -1,5 +1,5 @@
 /**
- * LOCI — in-headset UI.
+ * LOCII — in-headset UI.
  *
  * Rules this file exists to enforce:
  *  1. Nothing is ever typed inside the headset. Authoring happens on the flat
@@ -190,7 +190,7 @@ export class Panel {
 
 /**
  * The contextual action panel. Rebuilt whenever the mode or state changes —
- * LOCI's button sets are small, so a redraw is cheaper than diffing them.
+ * LOCII's button sets are small, so a redraw is cheaper than diffing them.
  */
 export class Menu {
   constructor({ width = 0.74, height = 0.34, position = [0, -0.3, -0.8] } = {}) {

@@ -20,7 +20,7 @@ const fakeHand = (joints) => ({
   get: (name) => (name in joints ? joints[name] : undefined)
 });
 
-console.log('\nLOCI pinch robustness\n');
+console.log('\nLOCII pinch robustness\n');
 
 t('does not throw when frame is undefined', () => {
   const i = new InputSystem();

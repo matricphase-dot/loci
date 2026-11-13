@@ -14,14 +14,14 @@ const { chromium } = require('/home/user/.npm/_npx/bbb8a2c4738e2b0c/node_modules
   });
   // Notes are unplaced in a fresh demo, so the agent should offer to place one.
   const dump = await p.evaluate(() => {
-    const d = window.__LOCI_DEBUG__ ? window.__LOCI_DEBUG__() : null;
+    const d = window.__LOCII_DEBUG__ ? window.__LOCII_DEBUG__() : null;
     return d;
   });
   console.log('notes:', dump?.count, 'mode:', dump?.mode);
   // Enter the palace overview, where the Curator surfaces its one suggestion.
   await p.keyboard.press('o');
   await p.waitForTimeout(1200);
-  const after = await p.evaluate(() => window.__LOCI_DEBUG__?.()?.mode);
+  const after = await p.evaluate(() => window.__LOCII_DEBUG__?.()?.mode);
   console.log('mode after overview:', after);
   await p.waitForTimeout(400);
   await p.screenshot({ path: '/home/user/loci/shots/scene-agent.png' });

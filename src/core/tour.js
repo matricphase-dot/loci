@@ -1,9 +1,9 @@
 /**
- * LOCI — the browser tour.
+ * LOCII — the browser tour.
  *
  * Why this exists:
  *   Judges are not guaranteed a headset, and neither are the people who browse
- *   the project gallery. If the only way to understand LOCI is to put on a Quest,
+ *   the project gallery. If the only way to understand LOCII is to put on a Quest,
  *   then most of the audience scores a black rectangle.
  *
  *   So the flat experience is not a fallback — it is a *screening room*. A slow,
@@ -23,7 +23,7 @@ export const SHOTS = [
     from: { p: [-0.55, 1.48, 1.95], l: [-0.55, 1.34, -2.3] },
     to: { p: [-0.55, 1.52, 0.75], l: [-0.60, 1.30, -2.3] },
     caption: 'Your notes, in the room you already know.',
-    sub: 'LOCI is a memory palace that lives on your actual walls.'
+    sub: 'LOCII is a memory palace that lives on your actual walls.'
   },
   {
     dur: 7000,

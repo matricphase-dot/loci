@@ -6,7 +6,7 @@ let passed = 0;
 const t = (n, f) => { try { f(); passed++; console.log(`  ok  ${n}`); } catch (e) { console.error(`FAIL  ${n}\n      ${e.message}`); process.exitCode = 1; } };
 const DAY = 86400000;
 
-console.log('\nLOCI daily ritual\n');
+console.log('\nLOCII daily ritual\n');
 
 t('first ever session starts a streak of 1', () => {
   const now = new Date(2026, 10, 13, 10).getTime();

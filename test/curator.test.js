@@ -16,7 +16,7 @@ const mk = (over = {}) => ({
   ...over
 });
 
-console.log('\nLOCI curator agent\n');
+console.log('\nLOCII curator agent\n');
 
 t('a perfect palace yields no standing suggestion, and no empty praise', () => {
   const cards = Array.from({ length: 6 }, (_, i) => mk({

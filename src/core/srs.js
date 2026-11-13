@@ -1,5 +1,5 @@
 /**
- * LOCI — scheduling engine.
+ * LOCII — scheduling engine.
  *
  * Pure functions only. No DOM, no three.js. This is the part that has to be
  * provably correct, because "Reason to Come Back" is judged on whether the

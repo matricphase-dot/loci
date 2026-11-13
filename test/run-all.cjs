@@ -1,5 +1,5 @@
 /**
- * LOCI — full local test run.
+ * LOCII — full local test run.
  * Unit + rubric conformance + build + end-to-end + production bundle.
  * Run with: npm run verify
  */

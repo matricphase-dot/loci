@@ -1,5 +1,5 @@
 /**
- * LOCI end-to-end smoke test.
+ * LOCII end-to-end smoke test.
  *
  * Boots the real app in Chromium with a software GL stack, drives the flat
  * authoring UI, walks the review loop, and fails on any console error or
@@ -10,7 +10,7 @@ const path = require('path');
 const PW = '/home/user/.npm/_npx/bbb8a2c4738e2b0c/node_modules/playwright-core';
 const { chromium } = require(PW);
 
-const URL = process.env.LOCI_URL || 'http://127.0.0.1:5173/';
+const URL = process.env.LOCII_URL || 'http://127.0.0.1:5173/';
 const SHOT = (n) => path.join('/home/user/loci/shots', n);
 
 const results = [];

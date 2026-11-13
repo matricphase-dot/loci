@@ -1,5 +1,5 @@
 /**
- * LOCI — the note itself.
+ * LOCII — the note itself.
  *
  * The core visual idea: a note's *materiality* is its memory strength.
  *   - Just reviewed  → solid, saturated, sitting calmly on the surface.

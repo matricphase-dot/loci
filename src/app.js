@@ -1,5 +1,5 @@
 /**
- * LOCI — main application.
+ * LOCII — main application.
  *
  * Two surfaces, one palace:
  *   - Flat screen: author notes (a real keyboard), see your schedule, enter.
@@ -316,7 +316,7 @@ async function enterXR() {
   }
   const ok = await navigator.xr.isSessionSupported('immersive-ar').catch(() => false);
   if (!ok) {
-    toast('This device cannot do immersive-ar. LOCI needs passthrough — that is the entire point.');
+    toast('This device cannot do immersive-ar. LOCII needs passthrough — that is the entire point.');
     return;
   }
 
@@ -678,7 +678,7 @@ function renderOnboarding() {
     },
     3: {
       title: 'PINCH TO ACT',
-      body: 'Bring your thumb and index finger together to choose. That is the only gesture in LOCI. If pinching is hard, just hold your gaze on something for a second instead.',
+      body: 'Bring your thumb and index finger together to choose. That is the only gesture in LOCII. If pinching is hard, just hold your gaze on something for a second instead.',
       buttons: [{ label: 'Begin', action: 'onboardNext' }]
     }
   }[step] ?? null;
@@ -753,7 +753,7 @@ function dismissSuggestion() {
 function showFlatHelp() {
   menu.render({
     title: 'AUTHORING HAPPENS FLAT',
-    body: 'Typing in a headset is miserable, so LOCI never asks you to. Take the headset off, add notes on the flat screen, then come back — your palace is already here.',
+    body: 'Typing in a headset is miserable, so LOCII never asks you to. Take the headset off, add notes on the flat screen, then come back — your palace is already here.',
     buttons: [{ label: 'Back to my room', action: 'dismiss' }]
   });
   menu.placeRelativeTo(camera);
@@ -773,7 +773,7 @@ function runAction(action) {
     case 'grade2': gradeCurrent(SRS.GRADE.GOOD); break;
     case 'grade3': gradeCurrent(SRS.GRADE.EASY); break;
     case 'goFlat':
-      toast('Open LOCI on the flat screen to add notes — you never type in here.');
+      toast('Open LOCII on the flat screen to add notes — you never type in here.');
       break;
     case 'cancelPlace':
       state.placingCardId = null;
@@ -858,7 +858,7 @@ function onXRFrame(time, frame) {
   } catch (err) {
     if (!state._xrWarned) {
       state._xrWarned = true;
-      console.warn('[LOCI] recovered from an input error; session continues.', err);
+      console.warn('[LOCII] recovered from an input error; session continues.', err);
     }
   }
 
@@ -877,7 +877,7 @@ function onXRFrame(time, frame) {
   } catch (err) {
     if (!state._actWarned) {
       state._actWarned = true;
-      console.warn('[LOCI] recovered from an interaction error; session continues.', err);
+      console.warn('[LOCII] recovered from an interaction error; session continues.', err);
     }
   }
   updateNoteVisuals(dt);
@@ -1079,7 +1079,7 @@ function renderCardList() {
   }
 }
 
-/** Palace filter chips — the visible proof that LOCI holds more than one context. */
+/** Palace filter chips — the visible proof that LOCII holds more than one context. */
 function renderContexts() {
   const host = document.getElementById('context-chips');
   if (!host) return;
@@ -1236,9 +1236,9 @@ export function boot() {
    * reference space, hit-test, anchors, input sources — so the output can be
    * pasted into a bug report instead of guessed at.
    *
-   * Usage in the browser console: __LOCI_DIAG__()
+   * Usage in the browser console: __LOCII_DIAG__()
    */
-  window.__LOCI_DIAG__ = () => {
+  window.__LOCII_DIAG__ = () => {
     const d = {
       webxr: typeof navigator.xr !== 'undefined',
       graph: !!window.__iwer || /iwer|immersive-web-emulator/i.test(navigator.userAgent),
@@ -1268,12 +1268,12 @@ export function boot() {
     }
 
     d.fps = Math.round(fpsEstimate());
-    console.log('%cLOCI diagnostics', 'color:#7fe3c0;font-weight:700', d);
+    console.log('%cLOCII diagnostics', 'color:#7fe3c0;font-weight:700', d);
     return d;
   };
 
   // Debug hook (no-op in normal use, invaluable for automated checks).
-  window.__LOCI_DEBUG__ = () => {
+  window.__LOCII_DEBUG__ = () => {
     const out = [];
     for (const [id, note] of state.notes) {
       const card = state.cards.find((c) => c.id === id);

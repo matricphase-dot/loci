@@ -15,7 +15,7 @@ const { chromium } = require('/home/user/.npm/_npx/bbb8a2c4738e2b0c/node_modules
     cards: document.getElementById('stat-total')?.textContent,
     canvas: !!document.querySelector('#canvas-root canvas'),
     fatal: !!document.querySelector('pre'),
-    notes: window.__LOCI_DEBUG__ ? window.__LOCI_DEBUG__().count : -1
+    notes: window.__LOCII_DEBUG__ ? window.__LOCII_DEBUG__().count : -1
   }));
   const real = errs.filter(e => !/favicon|Failed to load resource/i.test(e));
   console.log('production build:', JSON.stringify(state));

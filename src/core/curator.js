@@ -1,5 +1,5 @@
 /**
- * LOCI — the Curator.
+ * LOCII — the Curator.
  *
  * A small, deterministic, on-device agent that watches your palace and proposes
  * one useful action at a time.

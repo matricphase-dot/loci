@@ -1,5 +1,5 @@
 /**
- * LOCI — the stage.
+ * LOCII — the stage.
  *
  * A procedural stand-in room, shown ONLY when there is no passthrough to draw on
  * (desktop, the Immersive Web Emulator, or a device without immersive-ar).
@@ -7,7 +7,7 @@
  * Why this exists:
  *   The first version drew a wireframe grid, which read as "unfinished demo" and
  *   made emulator capture look like a dark void with floating cards. Since many
- *   judges — and many developers — will first meet LOCI through the emulator,
+ *   judges — and many developers — will first meet LOCII through the emulator,
  *   that first impression was underselling the whole idea.
  *
  *   This builds a quiet, stylised room instead: floor, two walls, a table, a

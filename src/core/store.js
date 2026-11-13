@@ -1,8 +1,8 @@
 /**
- * LOCI — persistence.
+ * LOCII — persistence.
  * Everything lives on the device: localStorage for the web build.
  * No accounts, no network calls, no third-party services. Passes the
- * "take it away" test trivially: remove everything external and LOCI still works.
+ * "take it away" test trivially: remove everything external and LOCII still works.
  */
 
 const KEY = 'loci.palace.v1';

@@ -1,5 +1,5 @@
 /**
- * LOCI — synthesised audio.
+ * LOCII — synthesised audio.
  *
  * Every sound is generated with the WebAudio API at runtime. No sample files,
  * no CDN, no licensing. This also means audio starts instantly and costs

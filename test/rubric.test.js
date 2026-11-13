@@ -1,5 +1,5 @@
 /**
- * LOCI — rubric conformance tests.
+ * LOCII — rubric conformance tests.
  *
  * These encode the competition's own stated requirements as executable checks.
  * If an edit ever breaks a hard requirement ("fully usable with hands, end to
@@ -21,7 +21,7 @@ const SRC_FILES = ['src/app.js', 'src/main.js', 'src/core/srs.js', 'src/core/sto
 let passed = 0;
 const t = (n, f) => { try { f(); passed++; console.log(`  ok  ${n}`); } catch (e) { console.error(`FAIL  ${n}\n      ${e.message}`); process.exitCode = 1; } };
 
-console.log('\nLOCI rubric conformance\n');
+console.log('\nLOCII rubric conformance\n');
 
 // ---------------------------------------------------------------- hard requirements
 t('HANDS-FIRST: immersive-ar (passthrough), never immersive-vr', () => {

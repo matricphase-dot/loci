@@ -10,7 +10,7 @@ const t = (name, fn) => {
   catch (e) { console.error(`FAIL  ${name}\n      ${e.message}`); process.exitCode = 1; }
 };
 
-console.log('\nLOCI scheduling engine\n');
+console.log('\nLOCII scheduling engine\n');
 
 t('new cards are due immediately and read as newly-placed', () => {
   const now = 1_700_000_000_000;

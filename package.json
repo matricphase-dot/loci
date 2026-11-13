@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "LOCI \u2014 a memory palace for your real room. Hands-first, seated WebXR productivity.",
+  "description": "LOCII \u2014 a memory palace for your real room. Hands-first, seated WebXR productivity.",
   "scripts": {
     "dev": "vite --host 0.0.0.0 --port 5173",
     "build": "vite build",

@@ -1,9 +1,9 @@
 /**
- * LOCI — spatial layer.
+ * LOCII — spatial layer.
  *
  * This is where the "your room is the mnemonic" claim is actually earned.
  *
- *  - Passthrough is the default view. LOCI never covers your room; it annotates it.
+ *  - Passthrough is the default view. LOCII never covers your room; it annotates it.
  *  - Placement uses the WebXR hit-test module against real geometry, then reads
  *    the hit pose's ORIENTATION so a note on a wall lies flat on that wall and
  *    a note on a table lies flat on the table. No guessing, no manual rotation.

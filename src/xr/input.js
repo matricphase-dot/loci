@@ -1,5 +1,5 @@
 /**
- * LOCI — input.
+ * LOCII — input.
  *
  * Hands are the primary and complete input path:
  *    GAZE aims  →  PINCH confirms.
